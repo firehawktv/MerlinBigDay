@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Teacher · Class Bird Count</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top"><h1>🐦 Teacher view</h1><button id="logout" class="link" style="color:#fff" hidden>Log out</button></header>
+
+<main id="login" hidden>
+  <section class="card">
+    <label for="pw">Teacher password</label>
+    <input id="pw" type="password" autocomplete="current-password">
+    <button id="login-btn" class="primary">Log in</button>
+    <p id="login-error" class="error" role="alert"></p>
+  </section>
+</main>
+
+<main id="dash" class="wide" hidden>
+  <div class="tiles">
+    <div class="tile"><span class="muted">Students</span><b id="t-students">0</b></div>
+    <div class="tile"><span class="muted">Species</span><b id="t-species">0</b></div>
+    <div class="tile"><span class="muted">All counts combined</span><b id="t-sum">0</b></div>
+    <div class="tile"><span class="muted">Sum of highest counts</span><b id="t-max">0</b></div>
+  </div>
+  <p class="muted">“Combined” adds every student’s count, so a flock seen by 10 kids counts 10 times. “Highest” takes the biggest single count per species, which is the honest number for eBird.</p>
+
+  <div class="toolbar">
+    <label style="margin:0"><input type="checkbox" id="open" style="width:auto"> Accepting new counts</label>
+    <button id="refresh">Refresh</button>
+    <a href="/api/teacher/export.csv"><button>Download all (CSV)</button></a>
+    <a href="/api/teacher/export-ebird.csv"><button>Download eBird file</button></a>
+  </div>
+  <div class="tabs">
+    <button data-tab="species" class="on">By bird</button>
+    <button data-tab="students">By student</button>
+  </div>
+  <div id="view"></div>
+</main>
+
+<script type="module" src="/teacher.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "name": "birdday",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test server/*.test.js",
+    "start": "node server/start.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/firehawktv/MerlinBigDay.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/firehawktv/MerlinBigDay/issues"
+  },
+  "homepage": "https://github.com/firehawktv/MerlinBigDay#readme",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@fastify/rate-limit": "^10.3.0",
+    "@fastify/static": "^10.1.5",
+    "better-sqlite3": "^12.11.1",
+    "fastify": "^5.12.5"
+  }
+}

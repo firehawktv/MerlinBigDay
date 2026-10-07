@@ -1,0 +1,10 @@
+{
+  "groups": [
+    {"name": "Backyard & feeder", "species": ["Northern Cardinal","Blue Jay","Black-capped Chickadee","Tufted Titmouse","White-breasted Nuthatch","Red-breasted Nuthatch","Downy Woodpecker","Hairy Woodpecker","Red-bellied Woodpecker","Carolina Wren","Mourning Dove","House Finch","American Goldfinch","Purple Finch","House Sparrow","Dark-eyed Junco","Eastern Bluebird","Brown Creeper","Pine Siskin"]},
+    {"name": "Yard & field", "species": ["American Robin","Gray Catbird","Northern Mockingbird","Brown Thrasher","European Starling","Cedar Waxwing","Eastern Towhee","Eastern Phoebe","Northern Flicker","Yellow-bellied Sapsucker","Pileated Woodpecker","Wild Turkey","Rock Pigeon","American Crow","Fish Crow","Common Grackle","Red-winged Blackbird","Brown-headed Cowbird","Rusty Blackbird","Ruby-throated Hummingbird","American Pipit"]},
+    {"name": "Sparrows", "species": ["Song Sparrow","White-throated Sparrow","Chipping Sparrow","Field Sparrow","Swamp Sparrow","Savannah Sparrow","White-crowned Sparrow"]},
+    {"name": "Fall migrants", "species": ["Yellow-rumped Warbler","Palm Warbler","Pine Warbler","Black-and-white Warbler","Blue-headed Vireo","Golden-crowned Kinglet","Ruby-crowned Kinglet","Hermit Thrush","Swainson's Thrush"]},
+    {"name": "Raptors & owls", "species": ["Red-tailed Hawk","Cooper's Hawk","Sharp-shinned Hawk","Red-shouldered Hawk","Broad-winged Hawk","Osprey","Bald Eagle","Northern Harrier","American Kestrel","Merlin","Peregrine Falcon","Turkey Vulture","Great Horned Owl","Barred Owl","Eastern Screech-Owl"]},
+    {"name": "Water & shore", "species": ["Canada Goose","Mallard","American Black Duck","Mute Swan","Double-crested Cormorant","Great Blue Heron","Great Egret","Snowy Egret","Belted Kingfisher","Killdeer","Sanderling","Semipalmated Plover","Black-bellied Plover","Greater Yellowlegs","Herring Gull","Ring-billed Gull","Great Black-backed Gull","Laughing Gull"]}
+  ]
+}

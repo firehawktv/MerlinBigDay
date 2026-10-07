@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6b3a">
+<title>Class Bird Count</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top">
+  <h1>🐦 Class Bird Count</h1>
+  <span id="sync" class="sync" aria-live="polite"></span>
+</header>
+
+<main id="join" hidden>
+  <section class="card">
+    <h2>October Big Day · Oct 10</h2>
+    <p>Count the birds you see today. Everything you log is added to our class total.</p>
+    <label for="name">Your first name <small>(optional)</small></label>
+    <input id="name" maxlength="30" autocomplete="off" placeholder="Leave blank to stay anonymous">
+    <button id="start" class="primary">Start counting</button>
+    <p id="join-error" class="error" role="alert"></p>
+    <details>
+      <summary>I already started on another device</summary>
+      <label for="resume">Resume code</label>
+      <input id="resume" maxlength="8" autocapitalize="characters" autocomplete="off">
+      <button id="resume-btn">Resume</button>
+    </details>
+  </section>
+  <section class="card info">
+    <h3>About October Big Day</h3>
+    <p>Twice a year, people all over the world count birds on the same day and share what they find with scientists. This page is an independent classroom tool and is not affiliated with Cornell Lab of Ornithology.</p>
+    <p>Want to join the global count too? Make a free account at <a href="https://ebird.org" target="_blank" rel="noopener">eBird</a>, or try the free <a href="https://merlin.allaboutbirds.org" target="_blank" rel="noopener">Merlin Bird ID</a> app. You don't need either to take part in our class count.</p>
+  </section>
+</main>
+
+<main id="count" hidden>
+  <section class="card who">
+    <div><strong id="who"></strong><div class="muted">Resume code: <code id="code"></code></div></div>
+    <button id="rename" class="link">Edit name</button>
+  </section>
+  <div id="closed" class="banner" hidden>Counting is closed. Your counts are saved.</div>
+  <div class="bar">
+    <input id="search" type="search" placeholder="Search birds…" autocomplete="off" aria-label="Search birds">
+    <div class="stats"><span id="stat-species">0</span> species · <span id="stat-total">0</span> birds</div>
+  </div>
+  <div id="list"></div>
+  <section class="card other">
+    <h3>Saw something not on the list?</h3>
+    <div class="row">
+      <input id="other" maxlength="60" placeholder="Bird name" autocomplete="off">
+      <button id="other-add">Add</button>
+    </div>
+  </section>
+</main>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>

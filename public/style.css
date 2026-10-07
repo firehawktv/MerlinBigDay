@@ -1,0 +1,54 @@
+:root{--g:#2f6b3a;--g2:#e8f3ea;--bg:#f6f7f4;--ink:#1d2a1f;--mut:#667;--line:#d9ded8;--err:#b3261e}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:env(safe-area-inset-bottom)}
+.top{background:var(--g);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+.top h1{font-size:1.15rem;margin:0}
+.sync{font-size:.8rem;opacity:.9}
+main{max-width:640px;margin:0 auto;padding:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+h2,h3{margin:.2em 0 .5em}
+label{display:block;font-weight:600;margin:.8em 0 .3em}
+small,.muted{color:var(--mut);font-weight:400}
+input{width:100%;font:inherit;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+button{font:inherit;padding:11px 16px;border-radius:10px;border:1px solid var(--g);background:#fff;color:var(--g);cursor:pointer;min-height:44px}
+button.primary{background:var(--g);color:#fff;width:100%;margin-top:12px}
+button.link{border:0;background:none;text-decoration:underline;padding:4px}
+.error{color:var(--err);min-height:1.2em}
+.who{display:flex;justify-content:space-between;align-items:center;gap:8px}
+code{background:var(--g2);padding:1px 6px;border-radius:6px;letter-spacing:.08em}
+.banner{background:#fff3cd;border:1px solid #e6d28a;border-radius:10px;padding:10px;margin-bottom:12px}
+.bar{position:sticky;top:48px;background:var(--bg);padding:6px 0;z-index:4}
+.stats{margin-top:6px;font-size:.9rem;color:var(--mut)}
+.group h3{position:static;margin:16px 4px 6px;font-size:.95rem;text-transform:uppercase;letter-spacing:.05em;color:var(--g)}
+.bird{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 8px 6px 12px;margin-bottom:6px}
+.bird.seen{background:var(--g2);border-color:#9bc8a4}
+.bird .nm{flex:1;padding-right:8px}
+.ctr{display:flex;align-items:center;gap:6px}
+.ctr button{width:44px;padding:0;font-size:1.4rem;line-height:1}
+.ctr .n{min-width:2.2ch;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.row{display:flex;gap:8px}
+.row input{flex:1}
+details{margin-top:12px}
+summary{cursor:pointer;color:var(--g)}
+/* teacher */
+.tabs{display:flex;gap:6px;margin:8px 0}
+.tabs button.on{background:var(--g);color:#fff}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:.92rem}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--g2)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0}
+.tile{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px}
+.tile b{display:block;font-size:1.5rem}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.x{border:0;background:none;color:var(--err);padding:0 4px;min-height:0;cursor:pointer}
+.wide{max-width:960px}
+@media (prefers-color-scheme:dark){
+:root{--bg:#121613;--ink:#e8efe9;--line:#2c352e;--g2:#1c2b20;--mut:#9aa89c}
+.card,input,.bird,table,.tile,button{background:#192019;color:var(--ink)}
+button.primary{background:var(--g);color:#fff}
+th{background:var(--g2)}
+.bird.seen{background:var(--g2)}
+.banner{background:#3a3217;border-color:#6b5c22}
+}
