@@ -17,7 +17,7 @@ Node 20+, one SQLite file on disk, no build step.
 
 1. Add Site > Create a Node.js Site: domain `birds.cooney.fun`, Node 22 (20+ works), app port `3000`.
 2. SSH in as the site user, clone this repo into the site root, then `npm ci --omit=dev`.
-3. Set the environment variables from `.env.example` in the site's Node.js settings. `TEACHER_PASSWORD` is required; the server won't start without it. Create the `DB_PATH` folder first.
+3. `cp .env.example .env`, then edit `.env` (or set the same variables in CloudPanel's Node.js settings). `TEACHER_PASSWORD` is required, 8+ characters; the server won't start without it. Create the `DB_PATH` folder first. Restart the app after any change; no `npm ci` needed.
 4. App start command: `npm start`. Issue the Let's Encrypt certificate under SSL/TLS so students get HTTPS (required for offline mode and installing to the home screen).
 5. Open `https://birds.cooney.fun/teacher` and log in.
 

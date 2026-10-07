@@ -2,12 +2,15 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 export function loadConfig(env = process.env) {
   const teacherPassword = env.TEACHER_PASSWORD;
-  if (!teacherPassword || teacherPassword.length < 8) {
-    throw new Error('TEACHER_PASSWORD must be set (8+ characters). See README.');
+  if (!teacherPassword) {
+    throw new Error('TEACHER_PASSWORD is not set. Put it in a .env file next to package.json or in the CloudPanel Node.js environment settings. See README.');
+  }
+  if (teacherPassword.length < 8) {
+    throw new Error(`TEACHER_PASSWORD is only ${teacherPassword.length} characters; it needs at least 8.`);
   }
   return {
     port: Number(env.PORT || 3000),
