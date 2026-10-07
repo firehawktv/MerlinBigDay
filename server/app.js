@@ -78,19 +78,22 @@ export function buildApp(config, { logger = false } = {}) {
 
   app.register(rateLimit, { global: false });
 
+  // "Anonymous N" counts only students who needed one, so the first unnamed kid is "Anonymous 1".
+  const nextLabel = () => `Anonymous ${db.prepare("SELECT COALESCE(MAX(CAST(SUBSTR(label, 11) AS INTEGER)), 0) + 1 AS n FROM students WHERE label LIKE 'Anonymous %'").get().n}`;
+  const setName = (id, name) => {
+    db.prepare('UPDATE students SET name = ? WHERE id = ?').run(name, id);
+    if (!name) db.prepare("UPDATE students SET label = ? WHERE id = ? AND label = ''").run(nextLabel(), id);
+  };
+
   // --- student API ----------------------------------------------------------
   const insertStudent = db.prepare(
     'INSERT INTO students (token, resume_code, label, name) VALUES (?, ?, ?, ?)'
   );
-  const labelTaken = db.prepare('SELECT 1 FROM students WHERE label = ?');
 
   app.post('/api/join', { config: { rateLimit: { max: 30, timeWindow: '1 minute' } } }, async (req, reply) => {
     if (!isOpen()) return reply.code(403).send({ error: 'Counting is closed.' });
     const name = cleanName(req.body?.name);
-    let label;
-    do {
-      label = `Birder #${1000 + crypto.randomInt(9000)}`;
-    } while (labelTaken.get(label));
+    const label = name ? '' : nextLabel();
     const token = crypto.randomBytes(24).toString('hex');
     const resume = randomCode(6);
     insertStudent.run(token, resume, label, name);
@@ -113,7 +116,7 @@ export function buildApp(config, { logger = false } = {}) {
 
   app.patch('/api/me', { preHandler: requireStudent }, async (req) => {
     const name = cleanName(req.body?.name);
-    db.prepare('UPDATE students SET name = ? WHERE id = ?').run(name, req.student.id);
+    setName(req.student.id, name);
     return { ok: true, name };
   });
 
@@ -163,14 +166,24 @@ export function buildApp(config, { logger = false } = {}) {
     return { ok: true };
   });
 
-  const displayName = (s) => (s.name ? `${s.name} (${s.label})` : s.label);
+  // Name if given (duplicates become "Emma (1)", "Emma (2)"), otherwise "Anonymous N".
+  const displayNames = (students) => {
+    const seen = new Map(), total = new Map();
+    for (const s of students) if (s.name) total.set(s.name, (total.get(s.name) || 0) + 1);
+    return new Map(students.map((s) => {
+      if (!s.name) return [s.id, (s.label || `Anonymous ${s.id}`).replace(/^Birder #/, 'Anonymous ')]; // old labels from early test runs
+      const i = (seen.get(s.name) || 0) + 1; seen.set(s.name, i);
+      return [s.id, total.get(s.name) > 1 ? `${s.name} (${i})` : s.name];
+    }));
+  };
 
   const loadAll = () => {
     const students = db.prepare('SELECT id, label, name, created_at FROM students ORDER BY id').all();
     const sightings = db.prepare(
       'SELECT student_id, species, is_custom AS custom, count, updated_at FROM sightings'
     ).all();
-    const byId = new Map(students.map((s) => [s.id, { ...s, display: displayName(s), sightings: [], total: 0 }]));
+    const names = displayNames(students);
+    const byId = new Map(students.map((s) => [s.id, { ...s, display: names.get(s.id), sightings: [], total: 0 }]));
     const bySpecies = new Map();
     for (const r of sightings) {
       const s = byId.get(r.student_id);
@@ -211,7 +224,7 @@ export function buildApp(config, { logger = false } = {}) {
   });
 
   app.patch('/api/teacher/students/:id', { preHandler: requireTeacher }, async (req) => {
-    db.prepare('UPDATE students SET name = ? WHERE id = ?').run(cleanName(req.body?.name), Number(req.params.id));
+    setName(Number(req.params.id), cleanName(req.body?.name));
     return { ok: true };
   });
 
@@ -233,9 +246,9 @@ export function buildApp(config, { logger = false } = {}) {
 
   app.get('/api/teacher/export.csv', { preHandler: requireTeacher }, async (req, reply) => {
     const { students } = loadAll();
-    const rows = [['Student', 'Student ID', 'Species', 'Count', 'Last updated (UTC)']];
+    const rows = [['Student', 'Species', 'Count', 'Last updated (UTC)']];
     for (const s of students) {
-      for (const x of s.sightings) rows.push([s.name || '', s.label, x.species, x.count, x.updated_at]);
+      for (const x of s.sightings) rows.push([s.display, x.species, x.count, x.updated_at]);
     }
     return sendCsv(reply, 'class-sightings.csv', rows);
   });

@@ -17,7 +17,9 @@ async function teacherCookie(app) {
 test('anonymous join, idempotent counts, resume', async () => {
   const app = mk();
   const s = await join(app);
-  assert.match(s.label, /^Birder #\d{4}$/);
+  assert.equal(s.label, 'Anonymous 1');
+  await join(app, 'Zoe'); // a named kid must not use up an Anonymous number
+  assert.equal((await join(app)).label, 'Anonymous 2');
   assert.equal(s.name, null);
   for (let i = 0; i < 2; i++) { // same PUT twice must not double count
     await app.inject({ method: 'PUT', url: '/api/sightings', headers: auth(s.token), payload: { species: 'Blue Jay', count: 3 } });
@@ -44,7 +46,8 @@ test('teacher routes require login; totals show sum and max', async () => {
   assert.equal(d.totals.sumOfMax, 5);
   const robin = d.species.find((x) => x.species === 'American Robin');
   assert.equal(robin.observers.length, 2);
-  assert.notEqual(d.students[0].display, d.students[1].display); // two Emmas stay distinct
+  assert.deepEqual(d.students.map((x) => x.display), ['Emma (1)', 'Emma (2)']); // two Emmas stay distinct
+  assert.equal(JSON.stringify(d).includes('Birder'), false);
   const ebird = (await app.inject({ url: '/api/teacher/export-ebird.csv', headers: { cookie } })).body;
   assert.match(ebird, /American Robin,,,4,/);
   assert.doesNotMatch(ebird, /Snowy Owl/); // custom species left out of the eBird file
@@ -62,6 +65,7 @@ test('closing stops new entries; csv neutralises formulas', async () => {
   assert.equal((await app.inject({ method: 'POST', url: '/api/join', payload: {} })).statusCode, 403);
   const csv = (await app.inject({ url: '/api/teacher/export.csv', headers: { cookie } })).body;
   assert.match(csv, /'=HYPERLINK/);
+  assert.doesNotMatch(csv.split('\r\n')[0], /ID/);
   await app.close();
 });
 
@@ -80,5 +84,16 @@ test('teacher deletes work even when the client sends a JSON content type with n
   d = (await app.inject({ url: '/api/teacher/data', headers })).json();
   assert.equal(d.students.length, 1);
   assert.equal((await app.inject({ method: 'POST', url: '/api/join', headers: { 'content-type': 'application/json' }, payload: '{bad' })).statusCode, 400);
+  await app.close();
+});
+
+test('clearing a name falls back to a stable Anonymous number', async () => {
+  const app = mk();
+  const zoe = await join(app, 'Zoe');
+  await join(app); // Anonymous 1
+  await app.inject({ method: 'PATCH', url: '/api/me', headers: auth(zoe.token), payload: { name: '' } });
+  const cookie = await teacherCookie(app);
+  const d = (await app.inject({ url: '/api/teacher/data', headers: { cookie } })).json();
+  assert.deepEqual(d.students.map((x) => x.display), ['Anonymous 2', 'Anonymous 1']);
   await app.close();
 });

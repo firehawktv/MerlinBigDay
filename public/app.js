@@ -121,7 +121,7 @@ function renderStats() {
 }
 
 function showWho() {
-  $('who').textContent = state.name ? `${state.name} · ${state.label}` : state.label;
+  $('who').textContent = state.name || 'Anonymous';
   $('code').textContent = state.code;
 }
 
