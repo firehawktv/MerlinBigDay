@@ -20,7 +20,7 @@ const out = path.join(root, 'public', 'photos');
 const UA = 'ClassBirdCount/1.0 (school bird count; cooney@firehawk.tv)';
 const THUMB_W = 200, LARGE_W = 1280, BATCH = 50;
 // Wikipedia article titles that differ from the bird's common name
-const ARTICLE = { Merlin: 'Merlin (bird)' };
+const ARTICLE = { Merlin: 'Merlin (bird)', 'Wild Turkey': 'Wild turkey', 'Herring Gull': 'American herring gull' };
 const OK_LICENSE = /^(public domain|pd\b|cc0|cc[ -]by(?![ -](nc|nd))(?:[ -]sa)?[ -]?[\d.]*)/i;
 
 const args = process.argv.slice(2);

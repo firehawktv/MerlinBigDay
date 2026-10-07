@@ -39,4 +39,6 @@ Photos come from [Wikimedia Commons](https://commons.wikimedia.org), the lead im
     node scripts/fetch-photos.mjs --only "Blue Jay"  # redo one
     node scripts/fetch-photos.mjs --force          # redo all
 
+Commons serves a few images as huge lossless PNGs; `python3 scripts/optimize-photos.py` (needs Pillow) converts them to JPEG. Behind a proxy, run Node with `NODE_USE_ENV_PROXY=1`.
+
 Run it on a machine that can reach wikipedia.org and commons.wikimedia.org, check the result, and commit `public/photos/`. The script lists any species it couldn't match. To pick a different picture for a bird (for example if the lead image is a female or a flight shot), add `"Blue Jay": "File:Exact_Commons_filename.jpg"` to `scripts/photo-overrides.json` and rerun with `--only`.
