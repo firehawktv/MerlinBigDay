@@ -36,6 +36,12 @@ export function buildApp(config, { logger = false } = {}) {
 
   app.addHook('onClose', async () => db.close());
 
+  // Tolerate an empty body with a JSON content type (e.g. DELETE from a fetch that sets the header).
+  app.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, done) => {
+    if (!body) return done(null, undefined);
+    try { done(null, JSON.parse(body)); } catch { const e = new Error('Invalid JSON'); e.statusCode = 400; done(e); }
+  });
+
   // --- sessions (teacher) ---------------------------------------------------
   const sign = (payload) =>
     crypto.createHmac('sha256', config.sessionSecret).update(payload).digest('hex');

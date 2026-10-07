@@ -64,3 +64,21 @@ test('closing stops new entries; csv neutralises formulas', async () => {
   assert.match(csv, /'=HYPERLINK/);
   await app.close();
 });
+
+test('teacher deletes work even when the client sends a JSON content type with no body', async () => {
+  const app = mk();
+  const a = await join(app, 'Ana'), b = await join(app, 'Ben');
+  await app.inject({ method: 'PUT', url: '/api/sightings', headers: auth(a.token), payload: { species: 'Blue Jay', count: 2 } });
+  await app.inject({ method: 'PUT', url: '/api/sightings', headers: auth(a.token), payload: { species: 'Osprey', count: 1 } });
+  const headers = { cookie: await teacherCookie(app), 'content-type': 'application/json' };
+  const rm = await app.inject({ method: 'DELETE', url: '/api/teacher/students/1/sightings?species=Osprey', headers });
+  assert.equal(rm.statusCode, 200);
+  let d = (await app.inject({ url: '/api/teacher/data', headers })).json();
+  assert.deepEqual(d.students[0].sightings.map((x) => x.species), ['Blue Jay']);
+  const del = await app.inject({ method: 'DELETE', url: '/api/teacher/students/2', headers });
+  assert.equal(del.statusCode, 200);
+  d = (await app.inject({ url: '/api/teacher/data', headers })).json();
+  assert.equal(d.students.length, 1);
+  assert.equal((await app.inject({ method: 'POST', url: '/api/join', headers: { 'content-type': 'application/json' }, payload: '{bad' })).statusCode, 400);
+  await app.close();
+});
