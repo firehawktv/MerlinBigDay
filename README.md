@@ -17,9 +17,19 @@ Node 20+, one SQLite file on disk, no build step.
 
 1. Add Site > Create a Node.js Site: domain `birds.cooney.fun`, Node 22 (20+ works), app port `3000`.
 2. SSH in as the site user, clone this repo into the site root, then `npm ci --omit=dev`.
-3. `cp .env.example .env`, then edit `.env` (or set the same variables in CloudPanel's Node.js settings). `TEACHER_PASSWORD` is required, 8+ characters; the server won't start without it. Create the `DB_PATH` folder first. Restart the app after any change; no `npm ci` needed.
-4. App start command: `npm start`. Issue the Let's Encrypt certificate under SSL/TLS so students get HTTPS (required for offline mode and installing to the home screen).
+3. `cp .env.example .env`, then edit `.env`. `TEACHER_PASSWORD` is required, 8+ characters; the server won't start without it. Create the `DB_PATH` folder first. (CloudPanel has no environment-variable setting for Node sites, so the `.env` file is the way.)
+4. Keep it running with PM2 (below). Issue the Let's Encrypt certificate under SSL/TLS so students get HTTPS (required for offline mode and installing to the home screen).
 5. Open `https://birds.cooney.fun/teacher` and log in.
+
+### Keep it running with PM2
+
+    sudo npm install -g pm2                       # once, as a sudo-capable user
+    cd /path/to/MerlinBigDay                      # as the site user
+    pm2 start server/start.js --name birds
+    pm2 save
+    pm2 startup                                   # prints a command: run it with sudo so it survives reboots
+
+After `git pull` or any `.env` change: `pm2 restart birds`. Logs: `pm2 logs birds`. Status: `pm2 status`.
 
 Back up the `.db` file after the event if you want to keep the data.
 
