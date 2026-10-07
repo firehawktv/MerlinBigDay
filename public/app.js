@@ -1,5 +1,8 @@
+import { openViewer } from '/viewer.js';
+
 const $ = (id) => document.getElementById(id);
 const LS = 'birdcount.v1';
+let photos = {}; // species -> { thumb, large, author, license, source } from /photos/credits.json
 
 const state = { token: null, label: '', name: '', code: '', counts: {}, custom: {}, pending: {}, groups: [] };
 
@@ -59,8 +62,22 @@ function birdRow(species, isCustom) {
   const el = document.createElement('div');
   el.className = 'bird' + (n ? ' seen' : '');
   el.dataset.species = species;
-  el.innerHTML = `<span class="nm"></span><span class="ctr"><button aria-label="Fewer" data-d="-1">−</button><span class="n">${n}</span><button aria-label="More" data-d="1">+</button></span>`;
+  el.innerHTML = `<span class="pic"></span><span class="nm"></span><span class="ctr"><button aria-label="Fewer" data-d="-1">−</button><span class="n">${n}</span><button aria-label="More" data-d="1">+</button></span>`;
   el.querySelector('.nm').textContent = species;
+  const photo = photos[species];
+  const pic = el.querySelector('.pic');
+  if (photo) {
+    const b = document.createElement('button');
+    b.className = 'thumb';
+    b.setAttribute('aria-label', `Larger photo of ${species}`);
+    const img = new Image();
+    img.src = photo.thumb; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+    b.append(img);
+    b.onclick = () => openViewer(species, photo);
+    pic.append(b);
+  } else {
+    pic.textContent = '🐦'; pic.classList.add('nophoto');
+  }
   el.querySelector('.ctr').addEventListener('click', (ev) => {
     const d = Number(ev.target.dataset?.d);
     if (d) setCount(species, (state.counts[species] || 0) + d, isCustom);
@@ -141,6 +158,7 @@ async function sync() {
 async function init() {
   load();
   try { state.groups = (await (await fetch('/species.json')).json()).groups; } catch {}
+  try { photos = await (await fetch('/photos/credits.json')).json(); } catch {} // optional
   if (state.token) { showCount(); sync(); } else { $('join').hidden = false; }
 
   $('start').onclick = async () => {

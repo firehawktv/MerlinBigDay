@@ -28,3 +28,15 @@ Back up the `.db` file after the event if you want to keep the data.
 - The eBird file uses the **highest single count per species**, so a bird seen by several kids isn't double-counted. Species students typed in by hand are left out of it.
 - Try the eBird file on eBird's upload page before the event day; their importer is picky about location and date. Set `SITE_LAT` and `SITE_LON` for best results.
 - Data stored: optional first name, a random ID, counts, and timestamps. No emails, accounts, or location.
+
+## Bird photos
+
+Each bird shows a thumbnail; tapping it opens a full-screen viewer (pinch or scroll-wheel to zoom, drag to pan, tap / swipe / X / Esc / back button to close). Birds without a photo show a 🐦 placeholder, so the app works with or without photos.
+
+Photos come from [Wikimedia Commons](https://commons.wikimedia.org), the lead image of each bird's Wikipedia article. They are downloaded once and **served from this site**, so students' devices never contact a third party. Only Public Domain, CC0, CC BY and CC BY-SA images are kept. Several require crediting the photographer, so the viewer shows the credit and a link to the source.
+
+    node scripts/fetch-photos.mjs                  # fetch any species still missing a photo
+    node scripts/fetch-photos.mjs --only "Blue Jay"  # redo one
+    node scripts/fetch-photos.mjs --force          # redo all
+
+Run it on a machine that can reach wikipedia.org and commons.wikimedia.org, check the result, and commit `public/photos/`. The script lists any species it couldn't match. To pick a different picture for a bird (for example if the lead image is a female or a flight shot), add `"Blue Jay": "File:Exact_Commons_filename.jpg"` to `scripts/photo-overrides.json` and rerun with `--only`.

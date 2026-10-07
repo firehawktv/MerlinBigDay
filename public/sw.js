@@ -1,5 +1,5 @@
-const CACHE = 'birds-v1';
-const SHELL = ['/', '/style.css', '/app.js', '/species.json', '/icon.svg', '/manifest.webmanifest'];
+const CACHE = 'birds-v2';
+const SHELL = ['/', '/style.css', '/app.js', '/viewer.js', '/species.json', '/icon.svg', '/manifest.webmanifest'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
@@ -9,6 +9,14 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== location.origin || url.pathname.startsWith('/api/') || url.pathname === '/teacher') return;
+  // bird photos never change: serve from cache once fetched
+  if (url.pathname.startsWith('/photos/') && !url.pathname.endsWith('credits.json')) {
+    e.respondWith(caches.match(e.request).then((hit) => hit || fetch(e.request).then((res) => {
+      if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(e.request, copy)); }
+      return res;
+    })));
+    return;
+  }
   // network first so updates reach students, cache as the offline fallback
   e.respondWith(fetch(e.request).then((res) => {
     const copy = res.clone();
